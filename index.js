@@ -52,6 +52,16 @@ app.put('/api/v1/messages/:id', (req, res) => {
   res.status(200).json(messages[index]);
 });
 
+// DELETE message
+app.delete('/api/v1/messages/:id', (req, res) => {
+  const index = messages.findIndex(m => m.id === req.params.id);
+  if (index === -1) return res.status(404).json({ error: 'Message not found' });
+
+  messages.splice(index, 1);
+  res.status(204).send();
+});
+
+
 
 
 const PORT = process.env.PORT || 3000;
