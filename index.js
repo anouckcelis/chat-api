@@ -38,6 +38,20 @@ app.post('/api/v1/messages', (req, res) => {
   res.status(201).json(newMessage);
 });
 
+// PUT update message
+app.put('/api/v1/messages/:id', (req, res) => {
+  const { id } = req.params;
+  const { text, from } = req.body;
+  const index = messages.findIndex(m => m.id === id);
+  if (index === -1) return res.status(404).json({ error: 'Message not found' });
+
+  if (text !== undefined) messages[index].text = text;
+  if (from !== undefined) messages[index].from = from;
+  messages[index].editedAt = new Date().toISOString();
+
+  res.status(200).json(messages[index]);
+});
+
 
 
 const PORT = process.env.PORT || 3000;
