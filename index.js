@@ -8,8 +8,8 @@ app.use(express.json());
 
 // Fake database
 let messages = [
-  { id: '1', user: 'John', text: 'Hello', createdAt: new Date().toISOString() },
-  { id: '2', user: 'Jane', text: 'Hi', createdAt: new Date().toISOString() }
+  { id: '1', user: 'John', text: 'Hello'},
+  { id: '2', user: 'Jane', text: 'Hi'}
 ];
 
 // Root route
@@ -23,20 +23,21 @@ app.get('/api/v1/messages', (req, res) => {
   const user = req.query.user;
 
   // ----- FILTER BERICHETEN OP USER -----
-  if (user) {
-    const filtered = messages.filter(m => m.user.toLowerCase() === user.toLowerCase());
-    return res.status(200).json({
-      status: 'success',
-      message: `Berichten van gebruiker ${user}`,
-      data: { messages: filtered }
-    });
-  }
+ if (user) {
+  const filtered = messages.filter(m => m.user.toLowerCase() === user.toLowerCase());
+  return res.status(200).json({
+    status: 'success',
+    message: `Messages from user ${user}`,
+    data: { messages: filtered }
+  });
+}
+
   // -----------------------------------
 
   // Als er geen filter is, geef alle berichten terug
   res.status(200).json({
     status: 'success',
-    message: 'Alle berichten',
+    message: 'GETTING messages',
     data: { messages }
   });
 });
@@ -65,7 +66,7 @@ app.post('/api/v1/messages', (req, res) => {
 
   res.status(201).json({
     status: 'success',
-    message: 'Bericht aangemaakt',
+    message: 'Message saved',
     data: { message: newMessage }
   });
 });
@@ -75,7 +76,7 @@ app.put('/api/v1/messages/:id', (req, res) => {
   const { id } = req.params;
   const { message } = req.body;
   const index = messages.findIndex(m => m.id === id);
-  if (index === -1) return res.status(404).json({ status: 'fail', message: 'Bericht niet gevonden' });
+  if (index === -1) return res.status(404).json({ status: 'fail', message: 'Message not found' });
 
   if (message.text !== undefined) messages[index].text = message.text;
   if (message.user !== undefined) messages[index].user = message.user;
@@ -83,7 +84,7 @@ app.put('/api/v1/messages/:id', (req, res) => {
 
   res.status(200).json({
     status: 'success',
-    message: 'Bericht bijgewerkt',
+    message: 'Message updated',
     data: { message: messages[index] }
   });
 });
@@ -91,12 +92,12 @@ app.put('/api/v1/messages/:id', (req, res) => {
 // DELETE: bestaand bericht verwijderen
 app.delete('/api/v1/messages/:id', (req, res) => {
   const index = messages.findIndex(m => m.id === req.params.id);
-  if (index === -1) return res.status(404).json({ status: 'fail', message: 'Bericht niet gevonden' });
+  if (index === -1) return res.status(404).json({ status: 'fail', message: 'Message not found' });
 
   messages.splice(index, 1);
   res.status(200).json({
     status: 'success',
-    message: 'Bericht verwijderd'
+    message: 'Message deleted'
   });
 });
 
