@@ -21,5 +21,14 @@ app.get('/api/v1/messages', (req, res) => {
   res.status(200).json(messages);
 });
 
+// GET message by ID
+app.get('/api/v1/messages/:id', (req, res) => {
+  const msg = messages.find(m => m.id === req.params.id);
+  if (!msg) return res.status(404).json({ error: 'Message not found' });
+  res.status(200).json(msg);
+});
+
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`API running on http://localhost:${PORT}`));
+
