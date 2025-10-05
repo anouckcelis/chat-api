@@ -18,23 +18,7 @@ app.get('/', (req, res) => {
 });
 
 // GET alle berichten
-// Optioneel gefilterd op user: GET /api/v1/messages?user=username
 app.get('/api/v1/messages', (req, res) => {
-  const user = req.query.user;
-
-  // ----- FILTER BERICHETEN OP USER -----
- if (user) {
-  const filtered = messages.filter(m => m.user.toLowerCase() === user.toLowerCase());
-  return res.status(200).json({
-    status: 'success',
-    message: `Messages from user ${user}`,
-    data: { messages: filtered }
-  });
-}
-
-  // -----------------------------------
-
-  // Als er geen filter is, geef alle berichten terug
   res.status(200).json({
     status: 'success',
     message: 'GETTING messages',
@@ -98,6 +82,31 @@ app.delete('/api/v1/messages/:id', (req, res) => {
   res.status(200).json({
     status: 'success',
     message: 'Message deleted'
+  });
+});
+
+app.get('/api/v1/messages', (req, res) => {
+  const user = req.query.user;
+
+  // Als er een user-parameter is → filter op user
+  if (user) {
+    const filtered = messages.filter(
+      m => m.user.toLowerCase() === user.toLowerCase()
+    );
+
+    // Als geen berichten gevonden zijn, stuur lege lijst terug (geen fout)
+    return res.status(200).json({
+      status: 'success',
+      message: `Messages from user ${user}`,
+      data: { messages: filtered }
+    });
+  }
+
+  // Anders: geef gewoon alle berichten terug
+  res.status(200).json({
+    status: 'success',
+    message: 'GETTING messages',
+    data: { messages }
   });
 });
 
